@@ -1,6 +1,4 @@
 class Reading(object):
-    """Reading stores the deserialized Avro record for the Kafka key."""
-    # Use __slots__ to explicitly declare all data members.
     __slots__ = [
         "plant_id",
         "moisture",
@@ -19,7 +17,7 @@ class Reading(object):
 
     @staticmethod
     def dict_to_reading(obj, ctx):
-        return reading(
+        return Reading(
                 obj['plant_id'],
                 obj['moisture'],    
                 obj['temperature'],    

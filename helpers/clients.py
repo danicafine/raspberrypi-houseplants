@@ -6,6 +6,7 @@ from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserialize
 
 from classes.reading import Reading
 from classes.houseplant import Houseplant
+from classes.mapping import Mapping
 
 import yaml
 
@@ -30,7 +31,7 @@ def reading_deserializer():
 	return AvroDeserializer(
 		schema_registry_client = sr_client(),
 		schema_str = Reading.get_schema(),
-		from_dict = Reading.from_dict
+		from_dict = Reading.dict_to_reading
 		)
 
 
@@ -38,7 +39,15 @@ def houseplant_deserializer():
 	return AvroDeserializer(
 		schema_registry_client = sr_client(),
 		schema_str = Houseplant.get_schema(),
-		from_dict = Houseplant.from_dict
+		from_dict = Houseplant.dict_to_houseplant
+		)
+
+
+def mapping_deserializer():
+	return AvroDeserializer(
+		schema_registry_client = sr_client(),
+		schema_str = Mapping.get_schema(),
+		from_dict = Mapping.dict_to_mapping
 		)
 
 

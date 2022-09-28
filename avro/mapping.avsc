@@ -1,0 +1,18 @@
+{
+    "name": "mapping",
+    "namespace": "com.houseplants",
+    "type": "record",
+    "doc": "Sensor-houseplant mapping.",
+    "fields": [
+        {
+            "doc": "Hardcoded ID of the physical soil sensor.",
+            "name": "sensor_id",
+            "type": "string"
+        },
+        {
+            "doc": "Plant identification number.",
+            "name": "plant_id",
+            "type": "int"
+        }
+    ]
+}
