@@ -11,18 +11,10 @@ from confluent_kafka.schema_registry.avro import AvroSerializer
 
 from adafruit_seesaw.seesaw import Seesaw
 
-import avro_helper
+from classes.reading import Reading 
+from classes.houseplant import Houseplant
 
-TOUCH_HI = 1200
-TOUCH_LO = 600
-
-# set up logging
-logger = logging.getLogger('soil_monitor')
-logger.setLevel(logging.INFO)
-fh = logging.FileHandler('soil_monitor.log')
-fh.setLevel(logging.WARN)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger.addHandler(fh)
+logger = logging.set_logging('houseplant_soil_monitor')
 
 # set up configs
 conf = avro_helper.read_ccloud_config("./librdkafka.config")
