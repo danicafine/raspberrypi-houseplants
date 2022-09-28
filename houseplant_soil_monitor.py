@@ -14,14 +14,10 @@ from adafruit_seesaw.seesaw import Seesaw
 from classes.reading import Reading 
 from classes.houseplant import Houseplant
 
-logger = logging.set_logging('houseplant_soil_monitor')
+from helpers import clients
 
-# set up configs
-conf = avro_helper.read_ccloud_config("./librdkafka.config")
-schema_registry_conf = {
-        'url': conf['schema.registry.url'],
-        'basic.auth.user.info': conf['basic.auth.user.info']
-}
+logger = logging.set_logging('houseplant_soil_monitor')
+config = clients.config()
 
 # set up schema registry
 schema_registry_client = SchemaRegistryClient(schema_registry_conf)
