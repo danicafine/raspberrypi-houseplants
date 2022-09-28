@@ -1,0 +1,23 @@
+{
+    "name": "reading",
+    "namespace": "com.houseplants",
+    "type": "record",
+    "doc": "Houseplant reading taken from meters.",
+    "fields": [
+        {
+            "doc": "Unique plant indentification number.",
+            "name": "plant_id",
+            "type": "int"
+        },
+        {
+            "doc": "Soil moisture as a percentage.",
+            "name": "moisture",
+            "type": "float"
+        },
+        {
+            "doc": "Temperature in degrees C of the soil of this plant.",
+            "name": "temperature",
+            "type": "float"
+        }
+    ]
+}

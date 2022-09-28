@@ -5,7 +5,7 @@ CREATE TABLE houseplant_metadata (
 ) WITH (
   kafka_topic='houseplant-metadata', 
   value_format='AVRO',
-  partitions=4
+  partitions=6
 );
 
 
@@ -16,7 +16,7 @@ CREATE STREAM houseplant_readings (
 ) WITH (
   kafka_topic='houseplant-readings',
   value_format='AVRO',
-  partitions=4
+  partitions=6
 );
 
 
@@ -28,7 +28,7 @@ CREATE STREAM houseplant_readings_enriched WITH (
 ) AS 
 SELECT 
     houseplant_readings.id               AS plant_id,
-    houseplant_readings.timestamp        AS ts,
+    houseplant_readings.ROWTIME          AS ts,
     houseplant_readings.moisture         AS moisture,
     houseplant_readings.temperature      AS temperature,
     houseplant_metadata.scientific_name  AS scientific_name,
@@ -41,7 +41,6 @@ SELECT
 FROM houseplant_readings
 JOIN houseplant_metadata
 ON houseplant_readings.id = houseplant_metadata.id
-PARTITION BY houseplant_readings.id
 EMIT CHANGES;
 
 
@@ -59,8 +58,8 @@ CREATE TABLE houseplant_low_readings WITH (
     CONCAT(given_name, ' the ', common_name, ' (', scientific_name, ') is looking pretty dry...') AS message,
     COUNT(*) AS low_reading_count
 FROM houseplant_readings_enriched
-WINDOW TUMBLING (SIZE 12 HOURS, RETENTION 7 DAYS)
+WINDOW TUMBLING (SIZE 6 HOURS, RETENTION 7 DAYS, GRACE PERIOD 10 MINUTES)
 WHERE moisture < moisture_low
 GROUP BY plant_id, scientific_name, common_name, given_name, moisture_low
-HAVING COUNT(*) = 720
-EMIT CHANGES;
+HAVING COUNT(*) > 100
+EMIT FINAL;

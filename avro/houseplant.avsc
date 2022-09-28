@@ -1,0 +1,48 @@
+{ 
+    "name": "houseplant",
+    "namespace": "com.houseplants",
+    "type": "record",
+    "doc": "Houseplant metadata.",
+    "fields": [
+        {
+            "doc": "Unique plant identification number.",
+            "name": "plant_id",
+            "type": "int"
+        },
+        {
+            "doc": "Scientific name of the plant.",
+            "name": "scientific_name",
+            "type": "string"
+        },
+        {
+            "doc": "The common name of the plant.",
+            "name": "common_name",
+            "type": "string"
+        },
+        {
+            "doc": "The given name of the plant.",
+            "name": "given_name",
+            "type": "string"
+        },
+        {
+            "doc": "Lowest temperature of the plant.",
+            "name": "temperature_low",
+            "type": "float"
+        },
+        {
+            "doc": "Highest temperature of the plant.",
+            "name": "temperature_high",
+            "type": "float"
+        },
+        {
+            "doc": "Lowest moisture of the plant.",
+            "name": "moisture_low",
+            "type": "float"
+        },
+        {
+            "doc": "Highest moisture of the plant.",
+            "name": "moisture_high",
+            "type": "float"
+        }
+    ]
+}
