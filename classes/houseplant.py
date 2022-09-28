@@ -29,7 +29,7 @@ class Houseplant(object):
         self.moisture_high    = moisture_high
 
     @staticmethod
-    def dict_to_houseplant(obj, ctx):
+    def dict_to_houseplant(obj, ctx=None):
         return Houseplant(
                 obj['plant_id'],
                 obj['scientific_name'],
@@ -42,7 +42,7 @@ class Houseplant(object):
             )
 
     @staticmethod
-    def houseplant_to_dict(houseplant, ctx):
+    def houseplant_to_dict(houseplant, ctx=None):
         return Houseplant.to_dict(houseplant)
 
     def to_dict(self):

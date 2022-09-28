@@ -16,7 +16,7 @@ class Reading(object):
         self.temperature = temperature
 
     @staticmethod
-    def dict_to_reading(obj, ctx):
+    def dict_to_reading(obj, ctx=None):
         return Reading(
                 obj['plant_id'],
                 obj['moisture'],    
@@ -24,7 +24,7 @@ class Reading(object):
             )
 
     @staticmethod
-    def reading_to_dict(reading, ctx):
+    def reading_to_dict(reading, ctx=None):
         return Reading.to_dict(reading)
 
     def to_dict(self):

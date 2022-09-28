@@ -14,14 +14,14 @@ class Mapping(object):
         self.plant_id  = plant_id
 
     @staticmethod
-    def dict_to_mapping(obj, ctx):
+    def dict_to_mapping(obj, ctx=None):
         return Mapping(
                 obj['sensor_id'],
                 obj['plant_id']    
             )
 
     @staticmethod
-    def mapping_to_dict(mapping, ctx):
+    def mapping_to_dict(mapping, ctx=None):
         return Mapping.to_dict(mapping)
 
     def to_dict(self):
