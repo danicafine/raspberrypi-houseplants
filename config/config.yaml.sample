@@ -1,0 +1,28 @@
+kafka:
+  bootstrap.servers: [BOOTSTRAP_SERVERS]
+  security.protocol: "SASL_SSL"
+  ssl.ca.location: "/etc/ssl/certs/ca-certificates.crt"
+  sasl.mechanisms: "PLAIN"
+  sasl.username: [CC_API_KEY]
+  sasl.password: [CC_API_SECRET]
+  session.timeout.ms: 45000
+
+# Confluent Cloud Schema Registry
+schema-registry:
+  schema.registry.url: [CC_SR_URL]
+  basic.auth.credentials.source: "USER_INFO"
+  basic.auth.user.info: [CC_SR_API_KEY]:[CC_SR_API_SECRET]
+
+# Telegram
+telegram:
+  api-token: [TELEGRAM_TOKEN]
+  chat-id: [CHAT_ID]
+
+topics:
+  readings: "houseplant-readings"
+  mappings: "houseplant-sensor-mapping"
+  houseplants: "houseplant-metadata"
+
+raspberry-pi:
+  sensor-low: 600
+  sensor-high: 1200
