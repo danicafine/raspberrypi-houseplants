@@ -1,0 +1,21 @@
+{
+  "name": "HttpSinkConnector_Houseplants_Telegram_Bot",
+  "config": {
+    "topics": "houseplant-low-readings",
+    "input.data.format": "AVRO",
+    "connector.class": "HttpSink",
+    "name": "HttpSinkConnector_Houseplants_Telegram_Bot",
+    "kafka.auth.mode": "KAFKA_API_KEY",
+    "http.api.url": "https://api.telegram.org/[...]/sendMessage",
+    "request.method": "POST",
+    "headers": "Content-Type: application/json",
+    "request.body.format": "string",
+    "batch.max.size": "1",
+    "batch.prefix": "{\"chat_id\":\"[...]\",",
+    "batch.suffix": "}",
+    "regex.patterns": ".*MESSAGE=(.*),LOW_READING_COUNT=(.*)}.*",
+    "regex.replacements": "\"text\":\"$1\"",
+    "regex.separator": "~",
+    "tasks.max": "1"
+  }
+}
