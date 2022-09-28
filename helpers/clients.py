@@ -67,6 +67,14 @@ def houseplant_serializer():
 		)
 
 
+def mapping_serializer():
+	return AvroSerializer(
+		schema_registry_client = sr_client(),
+		schema_str = Mapping.get_schema(),
+		to_dict = Mapping.mapping_to_dict
+		)
+
+
 def producer(value_serializer):
 	producer_conf = config()['kafka'] | { 'value.serializer': value_serializer }
 	return SerializingProducer(producer_conf)
