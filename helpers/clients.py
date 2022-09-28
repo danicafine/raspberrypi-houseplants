@@ -46,7 +46,7 @@ def reading_serializer():
 	return AvroSerializer(
 		schema_registry_client = sr_client(),
 		schema_str = Reading.get_schema(),
-		to_dict = Reading.to_dict
+		to_dict = Reading.reading_to_dict
 		)
 
 
@@ -54,7 +54,7 @@ def houseplant_serializer():
 	return AvroSerializer(
 		schema_registry_client = sr_client(),
 		schema_str = Houseplant.get_schema(),
-		to_dict = Houseplant.to_dict
+		to_dict = Houseplant.houseplant_to_dict
 		)
 
 

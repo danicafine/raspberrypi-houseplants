@@ -1,76 +1,67 @@
 import time
-import json
-import logging
 
-from board import SCL, SDA
-import busio
-from confluent_kafka import SerializingProducer
-from confluent_kafka.serialization import StringSerializer
-from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.schema_registry.avro import AvroSerializer
-
-from adafruit_seesaw.seesaw import Seesaw
+#from board import SCL, SDA
+#import busio
+#from adafruit_seesaw.seesaw import Seesaw
 
 from classes.reading import Reading 
-from classes.houseplant import Houseplant
 
-from helpers import clients
+from helpers import clients,logging
 
 logger = logging.set_logging('houseplant_soil_monitor')
 config = clients.config()
 
-# set up schema registry
-schema_registry_client = SchemaRegistryClient(schema_registry_conf)
+def produce_sensor_readings(producer, plant_addresses):
+    # i2c_bus = busio.I2C(SCL, SDA)
+    for plant_id,address in plant_addresses.items():
+        try:
+            # ss = Seesaw(i2c_bus, addr=int(address, 16))
+            sensor_values = config['raspberry-pi']
 
-reading_avro_serializer = AvroSerializer(
-        schema_registry_client = schema_registry_client,
-        schema_str = avro_helper.reading_schema,
-        to_dict = avro_helper.Reading.reading_to_dict
-)
+            # read moisture 
+            touch = 0.0 #ss.moisture_read()
+            if touch < sensor_values['sensor-low']:
+                touch = sensor_values['sensor-low']
+            elif touch > sensor_values['sensor-high']:
+                touch = sensor_values['sensor-high']
 
-# set up Kafka producer
-producer_conf = avro_helper.pop_schema_registry_params_from_config(conf)
-producer_conf['value.serializer'] = reading_avro_serializer
-producer = SerializingProducer(producer_conf)
+            touch_percent = (touch - sensor_values['sensor-low']) / (sensor_values['sensor-high'] - sensor_values['sensor-low']) * 100
 
-topic = 'houseplant-readings'
+            # read temperature
+            temp = 0.0 #ss.get_temp()
+        
+            # send data to Kafka
+            reading = Reading(int(plant_id), round(touch_percent, 3), round(temp, 3))
 
-# set up mapping between id and address
-plant_addresses = {
+            logger.info(f"Publishing message: key, value: ({plant_id},{reading})")
+            producer.produce(config['topics']['test'], key=plant_id, value=reading) 
+        except Exception as e:
+            logger.error("Got exception %s", e)
+        finally:
+            producer.poll()
+            producer.flush()
+
+
+if __name__ == '__main__':
+    # set up Kafka Producer for Readings
+    producer = clients.producer(clients.reading_serializer())
+
+    # set up mapping between id and address
+    plant_addresses = {
     '0': 0x39,
     '3': 0x37,
     '4': 0x36,
     '5': 0x38
-}
+    }
 
-while True:
-    i2c_bus = busio.I2C(SCL, SDA)
-    for k,v in plant_addresses.items():
-        try:
-            ss = Seesaw(i2c_bus, addr=v)
+    # start readings capture loop
+    try:
+        while True:
+            # later, update mappings
 
-            # read moisture 
-            touch = ss.moisture_read()
-            if touch < TOUCH_LO:
-                touch = TOUCH_LO
-            elif touch > TOUCH_HI:
-                touch = TOUCH_HI
+            # capture readings from sensors
+            produce_sensor_readings(producer, plant_addresses)
 
-            touch_percent = (touch - TOUCH_LO) / (TOUCH_HI - TOUCH_LO) * 100
-
-            # read temperature
-            temp = ss.get_temp()
-        
-            # send data to Kafka
-            ts = int(time.time())
-            reading = avro_helper.Reading(int(k), ts, round(touch_percent, 3), round(temp, 3))
-
-            logger.info('Publishing for key ' + str(k))
-            producer.produce(topic, key=k, value=reading) 
-            producer.poll()
-
-        except Exception as e:
-            print(str(e))
-            logger.error('Got exception ' + str(e))
-
-    time.sleep(5)
+            time.sleep(30)
+    finally:
+        producer.flush()
